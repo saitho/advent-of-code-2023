@@ -14,57 +14,32 @@ const numberMap = {
     nine: 9,
 };
 
-let sum = 0
-for (let t of data) {
-    let first = -1;
-    let last = -1;
+function findDigit(processData, cacheMatcher) {
     let cache = [];
-    let processData = t.toString().split('');
-    
-    // Find first value
-    outer_loop:
     for (const i in processData) {
         const number = processData[i];
         if (isNaN(parseInt(number))) {
             cache.push(number)
             for (const key in numberMap) {
-                if (cache.join('').endsWith(key)) {
-                    first = numberMap[key];
-                    processData = processData.slice(Number(i)+1);
-                    break outer_loop;
+                if (cacheMatcher(cache, key)) {
+                    return numberMap[key];
                 }
             }
         } else {
-            first = number;
-            processData = processData.slice(Number(i)+1);
-            break;
+            return number;
         }
     }
+    return 0;
+}
+
+let sum = 0
+for (const t of test) {
+    let processData = t.toString().split('');
     
-    // Find second value
-    cache = [];
-    outer_loop:
-    for (const i in processData.reverse()) {
-        const number = processData[i];
-        if (isNaN(parseInt(number))) {
-            cache.push(number)
-            for (const key in numberMap) {
-                if ([...cache].reverse().join('').startsWith(key)) {
-                    last = numberMap[key];
-                    processData = processData.slice(Number(i)+1);
-                    break outer_loop;
-                }
-            }
-        } else {
-            last = number
-            break;
-        }
-    }
-    if (last === -1) {
-        sum += Number(first*10)+Number(first);
-    } else {
-        sum += Number(first*10)+Number(last);
-    }
+    first = findDigit(processData, (cache, key) => cache.join('').endsWith(key))
+    last = findDigit(processData.reverse(), (cache, key) => [...cache].reverse().join('').startsWith(key))
+
+    sum += Number(first*10)+Number(last);
 }
 
 console.log('---');
