@@ -4,7 +4,6 @@ let sum = 0
 for (let t of data) {
     let first = -1;
     let last = -1;
-    let cache = [];
     for (const number of t.toString().split('')) {
         if (!isNaN(parseInt(number))) {
             if (first == -1) {
