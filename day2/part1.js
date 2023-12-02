@@ -1,4 +1,5 @@
-const {parseGames, readInputFile} = require("./common");
+const {readInputFile} = require("../common");
+const {parseGames} = require("./common");
 
 if (process.argv.length < 2) {
     console.log('missing file name')

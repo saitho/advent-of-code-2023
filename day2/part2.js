@@ -1,4 +1,5 @@
-const {parseGames, readInputFile} = require("./common");
+const {readInputFile} = require("../common");
+const {parseGames} = require("./common");
 
 function findFewestBag(games) {
     return games.map((g) => {

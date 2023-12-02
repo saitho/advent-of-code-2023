@@ -1,11 +1,3 @@
-function readInputFile() {
-    if (process.argv.length < 2) {
-        console.error('missing file name')
-        process.exit(1)
-    }
-    return require('fs').readFileSync(process.argv[2]).toString().split('\n');
-}
-
 // e.g. Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 function parseGames(gameString) {
     const regex = /^Game (\d+): (.*)$/;
@@ -34,4 +26,4 @@ function parseGames(gameString) {
     return {id: id, draws: draws}
 }
 
-module.exports = {readInputFile, parseGames}
+module.exports = {parseGames}
