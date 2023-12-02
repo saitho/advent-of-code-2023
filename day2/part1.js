@@ -1,11 +1,6 @@
 const {readInputFile} = require("../common");
 const {parseGames} = require("./common");
 
-if (process.argv.length < 2) {
-    console.log('missing file name')
-    process.exit(1)
-}
-
 function evaluateGames(games, bag) {
     return games.filter((g) => {
         for (const d of g.draws) {
