@@ -14,16 +14,12 @@ function parseGames(gameString) {
         const result = g.split(',').map(g => g.trim().split(' '))
         const draw = {red: 0, green: 0, blue: 0}
         for (const r of result) {
-            let pulledCubes = Number(r[0])
-            if (pulledCubes <= draw[r[1]]) {
-                continue
-            }
-            draw[r[1]] = pulledCubes
+            draw[r[1]] = Number(r[0])
         }
         draws.push(draw)
     }
 
-    return {id: id, draws: draws}
+    return {id: Number(id), draws: draws}
 }
 
 module.exports = {parseGames}

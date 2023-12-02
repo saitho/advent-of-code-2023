@@ -13,4 +13,4 @@ function evaluateGames(games, bag) {
 }
 
 const games = readInputFile().map(l => parseGames(l))
-console.log(evaluateGames(games, {red: 12, green: 13, blue: 14}).reduce((accumulator, g) => accumulator + Number(g.id), 0))
+console.log(evaluateGames(games, {red: 12, green: 13, blue: 14}).reduce((accumulator, g) => accumulator + g.id, 0))
