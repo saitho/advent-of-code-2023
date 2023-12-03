@@ -12,6 +12,7 @@ function getSymbolIndexes(lines, regex) {
 }
 
 function determineNumberAtIndex(line, index, direction = '') {
+    index = Number(index)
     if (index < 0 || index > line.length-1) {
         return ''
     }
@@ -39,4 +40,4 @@ function extractNumbers(line, previousIndexes, currentIndexes, nextIndexes) {
     return numbers
 }
 
-module.exports = {extractNumbers, getSymbolIndexes}
+module.exports = {determineNumberAtIndex, extractNumbers, getSymbolIndexes}
