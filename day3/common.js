@@ -25,19 +25,34 @@ function determineNumberAtIndex(line, index, direction = '') {
     return numberAtPreviousIndex + numberAtIndex + numberAtNextIndex
 }
 
-function extractNumbers(line, previousIndexes, currentIndexes, nextIndexes) {
-    const numbers = []
+function findNumbers(lines, symbolMatcher) {
+    const symbolIndexes = getSymbolIndexes(lines, symbolMatcher)
+    const allNumbers = []
+    for (let i in symbolIndexes) {
+        i = Number(i)
+        for (let symbolIndex of symbolIndexes[i]) {
+            const previousLine = lines[i-1] || ''
+            const currentLine = lines[i] || ''
+            const nextLine = lines[i+1] || ''
 
-    const allIndexes = [...previousIndexes, ...currentIndexes, ...nextIndexes]
-    for (const index of allIndexes||[]) {
-        const numberSet = new Set()
-        numberSet.add(determineNumberAtIndex(line, index))
-        numberSet.add(determineNumberAtIndex(line, index-1))
-        numberSet.add(determineNumberAtIndex(line, index+1))
-        numbers.push(...[...numberSet].map(n => parseInt(n)).filter(n => !isNaN(n)))
+            const numbers = new Set()
+            numbers.add(determineNumberAtIndex(previousLine, symbolIndex))
+            numbers.add(determineNumberAtIndex(currentLine, symbolIndex))
+            numbers.add(determineNumberAtIndex(nextLine, symbolIndex))
+
+            numbers.add(determineNumberAtIndex(previousLine, symbolIndex-1))
+            numbers.add(determineNumberAtIndex(currentLine, symbolIndex-1))
+            numbers.add(determineNumberAtIndex(nextLine, symbolIndex-1))
+
+            numbers.add(determineNumberAtIndex(previousLine, symbolIndex+1))
+            numbers.add(determineNumberAtIndex(currentLine, symbolIndex+1))
+            numbers.add(determineNumberAtIndex(nextLine, symbolIndex+1))
+
+            numbers.delete('')
+            allNumbers.push(numbers)
+        }
     }
-
-    return numbers
+    return allNumbers
 }
 
-module.exports = {determineNumberAtIndex, extractNumbers, getSymbolIndexes}
+module.exports = {findNumbers}
