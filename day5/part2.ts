@@ -19,4 +19,4 @@ for (let i = 0; i < seeds.length; i+=2) {
 }
 // Note: .sort()[0] does NOT always return the smallest value!!!!
 // WRONG: console.log(seeds.map(s => seedToLocation(s)).sort()[0])
-console.log(sortByStart(seedObjToLocation(seedObjs))[0].start)
+console.log(Math.min(...seedObjToLocation(seedObjs).map(s => s.start)))
