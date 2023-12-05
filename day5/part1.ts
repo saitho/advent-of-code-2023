@@ -10,4 +10,6 @@ const maps = loadMaps(input)
 
 debugToFile(seeds)
 
-console.log(seeds.map(s => seedToLocation(s)).sort())
+// Note: .sort()[0] does NOT always return the smallest value!!!!
+// WRONG: console.log(seeds.map(s => seedToLocation(s)).sort()[0])
+console.log(Math.min(...seeds.map(s => seedToLocation(s))))
