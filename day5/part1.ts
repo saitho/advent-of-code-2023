@@ -6,10 +6,11 @@ const input = readInputFile()
 
 const seeds = extractNumbers(input.shift().split(': ')[1])
 input.shift() // empty line
-const maps = loadMaps(input)
+loadMaps(input)
 
 debugToFile(seeds)
 
-// Note: .sort()[0] does NOT always return the smallest value!!!!
-// WRONG: console.log(seeds.map(s => seedToLocation(s)).sort()[0])
-console.log(Math.min(...seeds.map(s => seedToLocation(s))))
+// Note: .sort()[0] without SORTING FUNCTION does NOT always return the smallest value!!!!
+// WRONG: console.log(seeds.map(s => seedToLocation(s)).sort()[0])"
+// Docs: "If omitted, the array elements are converted to strings, then sorted according to each character's Unicode code point value."
+console.log(Math.min(...seeds.map(seedToLocation)))
