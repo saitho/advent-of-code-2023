@@ -1,4 +1,4 @@
-import {getHighestCardFromList, Hand} from "./lib/card.ts";
+import {getHighestCardFromList, getRank, Hand, handRanks} from "./lib/card.ts";
 
 const {readInputFile} = require("../common");
 
@@ -15,7 +15,9 @@ for (const line of input) {
 
 let sum = 0
 for (const i in hands.sort((a, b) => {
-    if (a.getRank() === b.getRank()) {
+    const rankA = getRank(a)
+    const rankB = getRank(b)
+    if (rankA === rankB) {
         // Compare hand
         for (let i = 0; i < a.cards.length; i++) {
             if (a.cards[i] === b.cards[i]) {
@@ -25,10 +27,10 @@ for (const i in hands.sort((a, b) => {
         }
         return 0
     }
-    return a.getRank() > b.getRank() ? -1 : 1;
+    return rankA > rankB ? -1 : 1;
 }).reverse()) {
     const hand = hands[i]
     sum += hand.bet * (Number(i)+1)
-    console.log(hand.cards.join('') + ' - Rank ' + hand.getRank() + ' - ' + hand.bet + ' * ' + (Number(i)+1))
+    console.log(hand.cards.join('') + ' - Rank ' + getRank(hand) + ' - ' + hand.bet + ' * ' + (Number(i)+1))
 }
 console.log(sum)

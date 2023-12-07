@@ -1,4 +1,4 @@
-const handRanks = {
+export const handRanks = {
     FIVE_OF_A_KIND: 6,
     FOUR_OF_A_KIND: 5,
     FULL_HOUSE: 4,
@@ -25,6 +25,37 @@ export function getHighestCardFromList(cards: string[], cardValues: string[]): s
     return cards.sort(cardValueSort(cardValues))[0]
 }
 
+export function getRank(hand: Hand) {
+    const groups = hand.getGroupedCards()
+    const entries = [...groups.values()]
+    if (groups.size === 1) {
+        // Five of a kind, where all five cards have the same label: AAAAA
+        return handRanks.FIVE_OF_A_KIND
+    }
+    if (groups.size === 2 && Math.max(...entries) === 4) {
+        // Four of a kind, where four cards have the same label and one card has a different label: AA8AA
+        return handRanks.FOUR_OF_A_KIND
+    }
+    if (groups.size === 2 && Math.max(...entries) === 3 && Math.min(...entries) === 2) {
+        // Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
+        return handRanks.FULL_HOUSE
+    }
+    if (groups.size === 3 && Math.max(...entries) === 3) {
+        // Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
+        return handRanks.THREE_OF_A_KIND
+    }
+    const entriesWithout1 = entries.filter(n => n !== 1)
+    if (groups.size === 3 && entriesWithout1.length === 2 && Math.max(...entriesWithout1) === 2 && Math.min(...entriesWithout1) === 2) {
+        // Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
+        return handRanks.TWO_PAIR
+    }
+    if (groups.size === 4 && entriesWithout1.length === 1 && Math.max(...entriesWithout1) === 2 && Math.min(...entriesWithout1) === 2) {
+        // One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
+        return handRanks.ONE_PAIR
+    }
+    return handRanks.HIGH_CARD
+}
+
 export class Hand {
     cards: string[];
     bet: number;
@@ -44,37 +75,5 @@ export class Hand {
             countCards.set(card, countCards.get(card)+1)
         }
         return countCards
-    }
-
-    getRank(): number
-    {
-        const groups = this.getGroupedCards()
-        const entries = [...groups.values()]
-        if (groups.size === 1) {
-            // Five of a kind, where all five cards have the same label: AAAAA
-            return handRanks.FIVE_OF_A_KIND
-        }
-        if (groups.size === 2 && Math.max(...entries) === 4) {
-            // Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-            return handRanks.FOUR_OF_A_KIND
-        }
-        if (groups.size === 2 && Math.max(...entries) === 3 && Math.min(...entries) === 2) {
-            // Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-            return handRanks.FULL_HOUSE
-        }
-        if (groups.size === 3 && Math.max(...entries) === 3) {
-            // Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-            return handRanks.THREE_OF_A_KIND
-        }
-        const entriesWithout1 = entries.filter(n => n !== 1)
-        if (groups.size === 3 && entriesWithout1.length === 2 && Math.max(...entriesWithout1) === 2 && Math.min(...entriesWithout1) === 2) {
-            // Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-            return handRanks.TWO_PAIR
-        }
-        if (groups.size === 4 && entriesWithout1.length === 1 && Math.max(...entriesWithout1) === 2 && Math.min(...entriesWithout1) === 2) {
-            // One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-            return handRanks.ONE_PAIR
-        }
-        return handRanks.HIGH_CARD
     }
 }
