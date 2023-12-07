@@ -4,7 +4,8 @@ const {readInputFile} = require("../common");
 
 const input = readInputFile()
 
-
+// Highest to lowest
+export const cardValues = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 
 const hands: Hand[] = []
 for (const line of input) {
@@ -20,7 +21,7 @@ for (const i in hands.sort((a, b) => {
             if (a.cards[i] === b.cards[i]) {
                 continue
             }
-            return getHighestCardFromList([a.cards[i], b.cards[i]]) === a.cards[i] ? -1 : 1
+            return getHighestCardFromList([a.cards[i], b.cards[i]], cardValues) === a.cards[i] ? -1 : 1
         }
         return 0
     }

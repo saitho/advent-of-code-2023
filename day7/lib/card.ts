@@ -1,5 +1,3 @@
-// Highest to lowest
-const cardValues = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 const handRanks = {
     FIVE_OF_A_KIND: 6,
     FOUR_OF_A_KIND: 5,
@@ -11,19 +9,20 @@ const handRanks = {
 }
 
 /**
- * Sort cards from high to low
- * @param a
- * @param b
+ *
+ * @param cardValuesList
  */
-function cardValueSort(a: string, b: string) {
-    if (cardValues.indexOf(a) === cardValues.indexOf(b)) {
-        return 0
+function cardValueSort(cardValuesList: string[]): (a: string, b: string) => number {
+    return (a: string, b: string) => {
+        if (cardValuesList.indexOf(a) === cardValuesList.indexOf(b)) {
+            return 0
+        }
+        return cardValuesList.indexOf(a) > cardValuesList.indexOf(b) ? 1 : -1
     }
-    return cardValues.indexOf(a) > cardValues.indexOf(b) ? 1 : -1
 }
 
-export function getHighestCardFromList(cards: string[]): string {
-    return cards.sort(cardValueSort)[0]
+export function getHighestCardFromList(cards: string[], cardValues: string[]): string {
+    return cards.sort(cardValueSort(cardValues))[0]
 }
 
 export class Hand {
