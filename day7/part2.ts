@@ -18,8 +18,8 @@ function getRankWithJoker(hand: Hand) {
     groups.delete('J')
     const entries = [...groups.values()]
 
-    if (groups.size === 1) {
-        // Five of a kind, where all five cards have the same label: AAAAA
+    if (groups.size <= 1) { // only one other letter (e.g. JJJJA) or no (e.g. JJJJJ)
+        // Five of a kind, where all five cards have the same label: JJJJJ
         return handRanks.FIVE_OF_A_KIND
     }
     if (Math.max(...entries) === 4-numberOfJokers) {

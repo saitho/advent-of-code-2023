@@ -1,0 +1,2 @@
+sample2.txt data from https://www.reddit.com/r/adventofcode/comments/18cr4xr/2023_day_7_better_example_input_not_a_spoiler/
+Thanks a lot!! :)
