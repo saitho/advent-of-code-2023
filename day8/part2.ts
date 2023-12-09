@@ -1,12 +1,9 @@
-import {getNewNodeValue} from "./lib.ts";
-
 const {readInputFile} = require("../common");
 
 const input = readInputFile()
 
 const instructions = input.shift().split('')
 input.shift() // empty line
-
 const mappings = new Map<string, {left: string; right: string}>()
 for (const i of input) {
     const split = i.split('=')
@@ -18,17 +15,26 @@ for (const i of input) {
 }
 
 let remainingInstructions = [...instructions]
-let start = 'AAA'
-let end = 'ZZZ'
-let currentNode = start
+let start = [...mappings.keys()].filter((k) => k.endsWith('A'))
+let currentNodes: string[] = start
 let counter = 0
 do {
     const instruction = remainingInstructions.shift()
     counter++
-    currentNode = getNewNodeValue(currentNode, instruction, mappings)
+    for (let i in currentNodes) {
+        const currentNode = currentNodes[i]
+        if (instruction === 'L') {
+            currentNodes[i] = mappings.get(currentNode).left
+        } else if (instruction === 'R') {
+            currentNodes[i] = mappings.get(currentNode).right
+        } else {
+            throw new Error('Unknown direction "'+ instruction + '"')
+        }
+    }
+    console.log(counter, currentNodes)
     if (!remainingInstructions.length) {
         remainingInstructions = [...instructions]
     }
-} while(currentNode !== end);
+} while(currentNodes.filter((k) => k.endsWith('Z')).length !== currentNodes.length);
 
 console.log(counter)
