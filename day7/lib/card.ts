@@ -72,7 +72,7 @@ export class Hand {
             if (!countCards.has(card)) {
                 countCards.set(card, 0)
             }
-            countCards.set(card, countCards.get(card)+1)
+            countCards.set(card, countCards.get(card)!+1)
         }
         return countCards
     }

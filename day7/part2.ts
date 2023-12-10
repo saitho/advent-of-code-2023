@@ -39,11 +39,8 @@ function getRankWithJoker(hand: Hand) {
     // handRanks.TWO_PAIR
     // two pair not possible with jokers. e.g. 1JJTQ is upgraded to three of a kind. QQJTJ is four of a kind
 
-    if (groups.size === 4 && Math.max(...entries) === 2-numberOfJokers && Math.min(...entries) === 2-numberOfJokers) {
-        // One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-        return handRanks.ONE_PAIR
-    }
-    return handRanks.HIGH_CARD
+    // High card not possible with jokers, as there will always be one pair
+    return handRanks.ONE_PAIR
 }
 
 const hands: Hand[] = []
