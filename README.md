@@ -18,3 +18,17 @@ Example:
 Hint: Use `TESTFILE` to overwrite the name of the test file (defaults to "data.txt" for prod and "sample.txt" for dev)
 
 **Note**: Day 1 Part 2 uses a different sample file: `TESTFILE=sample2.txt DAY=1 bun dev 2`
+
+## Days
+
+* Day 1 ⭐⭐
+* Day 2 ⭐⭐
+* Day 3 ⭐⭐
+* Day 4 ⭐⭐
+* Day 5 ⭐
+* Day 6 ⭐⭐
+* Day 7 ⭐⭐
+* Day 8 ⭐
+* Day 9 ⭐⭐
+* Day 10
+* Day 11 ⭐

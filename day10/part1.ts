@@ -1,4 +1,5 @@
 import {toCharMap} from "./lib.ts";
+import {Coord} from "../common-implementations/coordinates.ts";
 
 const {readInputFile} = require("../common");
 
@@ -11,8 +12,6 @@ if (startPointLocations.length !== 1) {
     throw new Error("Unique start point not found.")
 }
 const startCoord = startPointLocations[0]
-
-type Coord = {x: number; y: number}
 
 const validJunctionTypes = ['|', '-', 'L', 'F', 'J', '7']
 
