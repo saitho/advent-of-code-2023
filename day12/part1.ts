@@ -1,3 +1,5 @@
+import {distributeAll} from "./lib.ts";
+
 const {readInputFile} = require("../common");
 
 function pad(pattern: string, totalLength: number): string[] {
@@ -33,59 +35,75 @@ function getBlankTilesIndexes(pattern: string): number[]
     return indexes
 }
 
-function distribute(totalNumber: number, items: number, currentNumber = 1): Map<number, number>[] {
-    const maps: Map<number, number>[] = []
-    if (currentNumber > totalNumber || items <= 0) {
-        return maps
+function reduceEmptySpaces(pattern: string) {
+    let indexesToBeDropped: number[] = []
+    let m;
+    const regex = /\.\.+/g;
+    while ((m = regex.exec(pattern)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+        m.forEach((match, groupIndex) => {
+            if (pattern.slice(m.index) === match) {
+                // match et the end of the pattern
+                for (let i = m.index; i < pattern.length; i++) {
+                    indexesToBeDropped.push(i)
+                }
+            } else {
+                // match in the pattern
+                for (let i = 1; i < match.length; i++) {
+                    indexesToBeDropped.push(i)
+                }
+            }
+        });
     }
-    for (let i = 0; i < items; i++) {
-        const map = new Map<number, number>()
-        map.set(currentNumber, i)
-        const sub = distribute(totalNumber, items-i, currentNumber+1)
-        sub.forEach((value, index) => {
-            value.forEach((value1, key) => {
-                map.set(key, value1)
-            })
-        })
-        maps.push(map)
+    let newPattern = ''
+    for (const index in pattern) {
+        if (indexesToBeDropped.includes(Number(index))) {
+            continue
+        }
+        newPattern += pattern[index]
     }
-    return maps
+    return {pattern: newPattern, remainingLength: indexesToBeDropped.length}
 }
 
 /**
  * Calculate variants by shifting onsen groups within the string
  */
-function getShiftVariants(pattern: string, totalLength: number) {
-    let remainingLength = totalLength-pattern.length
+function getShiftVariants(input: string) {
+    let {pattern, remainingLength} = reduceEmptySpaces(input)
+
     let indexes = getBlankTilesIndexes(pattern)
     const variants = []
-    const distribution = distribute(indexes.length, remainingLength)
-    for (const map of distribution) {
-        let newPattern = ''
-        for (const i in indexes) {
-            const currentIndex = indexes[i]
-            const nextIndex = indexes[Number(i)+1] || undefined
-            if (i === '0' && currentIndex > 0) {
-                newPattern += pattern.slice(0, currentIndex)
-            }
-            newPattern += '.' // already on index
-            for (let n = 0; n < map.get(Number(i)+1); n++) {
-                newPattern += '.'
-            }
-            if (nextIndex !== undefined) {
-                if (currentIndex+1 !== nextIndex) {
-                    newPattern += pattern.slice(currentIndex+1, nextIndex)
+    for (let number = 0; number <= remainingLength; number++) {
+        for (const map of distributeAll(indexes.length, number)) {
+            let newPattern = ''
+            for (const i in indexes) {
+                const currentIndex = indexes[i]
+                const nextIndex = indexes[Number(i)+1] || undefined
+                if (i === '0' && currentIndex > 0) {
+                    newPattern += pattern.slice(0, currentIndex)
                 }
-            } else {
-                newPattern += pattern.slice(currentIndex+1)
+                newPattern += '.' // already on index
+                for (let n = 0; n < (map.get(Number(i)+1) || 0); n++) {
+                    newPattern += '.'
+                }
+                if (nextIndex !== undefined) {
+                    if (currentIndex+1 !== nextIndex) {
+                        newPattern += pattern.slice(currentIndex+1, nextIndex)
+                    }
+                } else {
+                    newPattern += pattern.slice(currentIndex+1)
+                }
             }
+            variants.push(newPattern)
         }
-        variants.push(newPattern)
     }
     return variants
 }
 
-function calculateVariants(onsen: string, groups: string): string[]
+function calculateVariants(onsen: string, groups: string): Set<string>
 {
     const groupsTokens: number[] = groups.split(',').map(Number)
     let basicPattern = '';
@@ -101,14 +119,17 @@ function calculateVariants(onsen: string, groups: string): string[]
     }
     let totalLength = onsen.length
 
+    const paddedBasicPattern = pad(basicPattern, totalLength)
     const variants = []
-    variants.push(...pad(basicPattern, totalLength))
-    for (const shiftVariant of getShiftVariants(basicPattern, totalLength)) {
-        variants.push(...pad(shiftVariant, totalLength))
+    variants.push(...paddedBasicPattern)
+    for (const pattern of paddedBasicPattern) {
+        for (const shiftVariant of getShiftVariants(pattern)) {
+            variants.push(...pad(shiftVariant, totalLength))
+        }
     }
 
     // Match variants with existing onsen string
-    return variants.filter((variant: string) => {
+    return new Set<string>(variants.filter((variant: string) => {
         if (variant.length !== onsen.length) {
             return false
         }
@@ -120,27 +141,28 @@ function calculateVariants(onsen: string, groups: string): string[]
             }
         }
         return true
-    })
+    }))
 }
 
 /**
- * ?###???????? 3,2,1
- * .###.##.#...   ok
- * .###.##..#..
- * .###.##...#.
- * .###.##....#  ok
- * .###..##.#..
- * .###..##..#.
- * .###..##...#  ok
- * .###...##.#.
- * .###...##..#  ok
- * .###....##.#  ok
+ * ?????#??##??????# 1,3,3,3
+ *
+ * ..#.###.###...### 1,3,3,3
+ * .#..###.###...### 1,3,3,3
+ * .#.###..###...### 1,3,3,3
+ * #..###..###...### 1,3,3,3
+ * #...###.###...### 1,3,3,3
  */
 
 const input = readInputFile()
+let sum = 0
 for (const line of input) {
     const splitLine = line.split(' ');
     const onsen = splitLine[0]
     const groups = splitLine[1]
-    console.log(calculateVariants(onsen, groups))
+    const variants = calculateVariants(onsen, groups)
+    console.log(onsen, groups, variants.size)
+    sum += variants.size
 }
+// 5829 too low
+console.log(sum)
