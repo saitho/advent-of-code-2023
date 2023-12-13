@@ -32,3 +32,5 @@ Hint: Use `TESTFILE` to overwrite the name of the test file (defaults to "data.t
 * Day 9 ⭐⭐
 * Day 10
 * Day 11 ⭐
+* Day 12
+* Day 13
