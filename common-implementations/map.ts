@@ -3,14 +3,25 @@ import {Coord} from "./coordinates.ts";
 export class CharMap {
     protected map = new Map<number, Map<number, string>>()
 
-    public toCoords(filter: (char: string) => boolean = null): Coord[] {
+    constructor(init: undefined|{sizeX: number; sizeY: number, char?: string} = undefined) {
+        if (init) {
+            for (let y = 0; y < init.sizeY; y++) {
+                this.map.set(y, new Map())
+                for (let x = 0; x < init.sizeX; x++) {
+                    this.map.get(y)?.set(x, init?.char || '')
+                }
+            }
+        }
+    }
+
+    public toCoords(filter: ((char: string) => boolean)|undefined = undefined): Coord[] {
         const coords: Coord[] = []
         let counter = 1
 
         this.map.forEach((value, y) => {
             let countX = 0
             value.forEach((value1, x) => {
-                if (!filter || filter(value1)) {
+                if (filter !== undefined && filter(value1)) {
                     coords.push({x: countX, y, label: (counter++).toString()})
                 }
                 countX++
@@ -47,6 +58,23 @@ export class CharMap {
         return this.map.size
     }
 
+    public countX(): number {
+        return Math.max(...[...this.map.values()].map(m => m.size))
+    }
+
+    public print(): string {
+        let lines: string[] = []
+        this.map.forEach((value, y) => {
+            const line: string[] = []
+            value.forEach((value1, x) => {
+                line.push(value1)
+            })
+            lines.push(line.join(''))
+        })
+
+        return lines.join("\n")
+    }
+
     /**
      * Loop map by column on y axis. `value` array is characters per column (i.e. index = x axis)
      * @param callbackFn
@@ -73,10 +101,10 @@ export class CharMap {
         })
     }
 
-    public indexesX(filter: (value: string[], x: number) => boolean = null): number[] {
+    public indexesX(filter: ((value: string[], x: number) => boolean)|undefined = undefined): number[] {
         const indexes: number[] = []
         this.forX((values, index) => {
-            if (filter !== null && !filter(values, index)) {
+            if (filter !== undefined && !filter(values, index)) {
                 return
             }
             indexes.push(index)
@@ -84,10 +112,10 @@ export class CharMap {
         return indexes
     }
 
-    public indexesY(filter: (value: string[], index: number) => boolean = null): number[] {
+    public indexesY(filter: ((value: string[], index: number) => boolean)|undefined = undefined): number[] {
         const indexes: number[] = []
         this.forY((values, index) => {
-            if (filter !== null && !filter(values, index)) {
+            if (filter !== undefined && !filter(values, index)) {
                 return
             }
             indexes.push(index)
