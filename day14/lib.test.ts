@@ -1,6 +1,6 @@
 import {expect, test} from "bun:test";
 import {tiltMap} from "./lib.ts";
-import {toCharMap} from "../day10/lib.ts";
+import {toCharMap} from "../common-implementations/map.ts";
 
 test("tiltMap", () => {
     const input = 'O....#....\n' +

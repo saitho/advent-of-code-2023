@@ -62,6 +62,41 @@ export class CharMap {
         return Math.max(...[...this.map.values()].map(m => m.size))
     }
 
+    public rangeX(): { from: number, to: number } {
+        const allXIndexes = [...this.map.values()].map(m => [...m.keys()]).reduce((total, curr) => {
+            total.push(...curr)
+            return total
+        })
+        return {from: Math.min(...allXIndexes), to: Math.max(...allXIndexes)}
+    }
+
+    public rangeY(): { from: number, to: number } {
+        return {from: Math.min(...this.map.keys()), to: Math.max(...this.map.keys())}
+    }
+
+    public fillMissingSpots(char = ''): void
+    {
+        let rangeX = this.rangeX()
+        let rangeY = this.rangeY()
+
+        for (let y = rangeY.from; y <= rangeY.to; y++) {
+            for (let x = rangeX.from; x <= rangeX.to; x++) {
+                if (this.getChar(x, y) === undefined) {
+                    this.setChar(char, x, y)
+                }
+            }
+        }
+        // Order map by key
+        this.map.forEach((value, key) => {
+            this.map.set(key, new Map([...value.entries()].sort((a, b) => {
+                return a[0] < b[0] ? -1 : 1
+            })))
+        })
+        this.map = new Map([...this.map.entries()].sort((a, b) => {
+            return a[0] < b[0] ? -1 : 1
+        }))
+    }
+
     public print(): string {
         let lines: string[] = []
         this.map.forEach((value, y) => {

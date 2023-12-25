@@ -1,5 +1,5 @@
-import {toCharMap} from "./lib.ts";
 import {Coord} from "../common-implementations/coordinates.ts";
+import {toCharMap} from "../common-implementations/map.ts";
 
 const {readInputFile} = require("../common");
 
